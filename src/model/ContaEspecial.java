@@ -4,8 +4,8 @@ package model;
 public class ContaEspecial extends ContaBancaria {
     private double limiteCredito;
 
-    public ContaEspecial(int id, String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao, double limiteCredito) {
-        super(id, dataAbertura, pessoa, saldo, limitePorTransacao);
+    public ContaEspecial(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao, double limiteCredito) {
+        super(dataAbertura, pessoa, saldo, limitePorTransacao);
         this.limiteCredito = limiteCredito;
     }
 

@@ -4,8 +4,8 @@ public class ContaPoupanca extends ContaBancaria {
 
     private int diaAniversario;
 
-    public ContaPoupanca(int id, String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao, int diaAniversario) {
-        super(id, dataAbertura, pessoa, saldo, limitePorTransacao);
+    public ContaPoupanca(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao, int diaAniversario) {
+        super(dataAbertura, pessoa, saldo, limitePorTransacao);
         this.diaAniversario = diaAniversario;
     }
 

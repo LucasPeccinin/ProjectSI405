@@ -1,8 +1,8 @@
 package model;
 
 public class ContaComum extends ContaBancaria {
-    public ContaComum(int id, String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao) {
-        super(id, dataAbertura, pessoa, saldo, limitePorTransacao);
+    public ContaComum(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao) {
+        super(dataAbertura, pessoa, saldo, limitePorTransacao);
     }
 
     @Override

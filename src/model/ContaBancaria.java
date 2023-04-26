@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public abstract class ContaBancaria {
  
     private static int ContaCount = 1;
@@ -10,12 +12,13 @@ public abstract class ContaBancaria {
     private double saldo = 0.0;
     private double limitePorTransacao;
 
-    public ContaBancaria(int id, String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao) {
-        this.id = id;
+    public ContaBancaria(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao) {
+        this.id = ContaBancaria.ContaCount;
         this.dataAbertura = dataAbertura;
         this.saldo = saldo;
         this.pessoa = pessoa;
         this.limitePorTransacao = limitePorTransacao;
+        ContaBancaria.ContaCount += 1;
     }
 
     public int getId() {
@@ -28,6 +31,10 @@ public abstract class ContaBancaria {
 
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
+    }
+    
+    public String getNomePessoa() {
+        return this.pessoa.getNome();
     }
 
     public double getSaldo() {
@@ -70,5 +77,9 @@ public abstract class ContaBancaria {
         }
         this.saldo -= valor;
         contaDestino.depositar(valor);
+    }
+    
+    public static ArrayList<ContaBancaria> listarContas(ArrayList<ContaBancaria> contas) {
+        return contas;
     }
 }
