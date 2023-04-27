@@ -1,11 +1,9 @@
 package model;
 
-import java.util.ArrayList;
-
 public abstract class ContaBancaria {
- 
+
     private static int ContaCount = 1;
-    
+
     private int id;
     private String dataAbertura;
     private Pessoa pessoa;
@@ -32,9 +30,13 @@ public abstract class ContaBancaria {
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
     }
-    
+
     public String getNomePessoa() {
         return this.pessoa.getNome();
+    }
+
+    public String getCpfPessoa() {
+        return this.pessoa.getCpf();
     }
 
     public double getSaldo() {
@@ -52,34 +54,51 @@ public abstract class ContaBancaria {
     public void setLimitePorTransacao(double limitePorTransacao) {
         this.limitePorTransacao = limitePorTransacao;
     }
-    
+
     @Override
     public String toString() {
-        return "\nConta Bancaria:" + this.getId() + "\nCliente:" + this.getPessoa() + 
-               "\nSaldo:" + this.getSaldo() + "\nLimite por Transação:" + this.getLimitePorTransacao() + "\n";
+        return "\nConta Bancaria:" + this.getId() + "\nCliente:" + this.getPessoa()
+                + "\nSaldo:" + this.getSaldo() + "\nLimite por Transação:" + this.getLimitePorTransacao() + "\n";
     }
- 
+
     public void depositar(double valor) {
         this.saldo += valor;
     }
-    
-    public abstract void sacar(double valor);
 
-    public void transferir(double valor, ContaBancaria contaDestino) {
+    public abstract void sacar(double valor) throws SaldoOperacaoInsuficienteException, ValorOperacaoZeradoException, ValorExcedeLimiteException;
+
+    public void transferir(double valor, ContaBancaria contaDestino) throws SaldoOperacaoInsuficienteException, ValorOperacaoZeradoException, ValorExcedeLimiteException {
         if (valor <= 0) {
-            throw new IllegalArgumentException("Valor da transferência deve ser maior que zero");
+            throw new ValorOperacaoZeradoException();
         }
         if (this.saldo - valor < 0) {
-            throw new IllegalArgumentException("Saldo insuficiente para realizar a transferência");
+            throw new SaldoOperacaoInsuficienteException();
         }
         if (valor > this.limitePorTransacao) {
-            throw new IllegalArgumentException("Valor da transferência excede o limite por transação");
+            throw new ValorExcedeLimiteException();
         }
         this.saldo -= valor;
         contaDestino.depositar(valor);
     }
+
+    public class SaldoOperacaoInsuficienteException extends Exception {
+
+        public SaldoOperacaoInsuficienteException() {
+            System.out.println("\nSaldo insuficiente para realizar a transferencia");
+        }
+    }
+
+    public class ValorOperacaoZeradoException extends Exception {
+
+        public ValorOperacaoZeradoException() {
+            System.out.println("\nValor da transferencia deve ser maior que zero");
+        }
+    }
     
-    public static ArrayList<ContaBancaria> listarContas(ArrayList<ContaBancaria> contas) {
-        return contas;
+    public class ValorExcedeLimiteException extends Exception {
+
+        public ValorExcedeLimiteException() {
+            System.out.println("\nValor da operacao excede o limite por transacao");
+        }
     }
 }

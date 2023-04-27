@@ -18,15 +18,15 @@ public class ContaPoupanca extends ContaBancaria {
     }
 
     @Override
-    public void sacar(double valor) {
+    public void sacar(double valor) throws SaldoOperacaoInsuficienteException, ValorOperacaoZeradoException, ValorExcedeLimiteException {
         if (valor <= 0) {
-            throw new IllegalArgumentException("Valor do saque deve ser maior que zero");
+            throw new ValorOperacaoZeradoException();
         }
         if (this.getSaldo() - valor < 0) {
-            throw new IllegalArgumentException("Saldo insuficiente para realizar o saque");
+            throw new SaldoOperacaoInsuficienteException();
         }
         if (valor > this.getLimitePorTransacao()) {
-            throw new IllegalArgumentException("Valor do saque excede o limite por transação");
+            throw new ValorExcedeLimiteException();
         }
         this.setSaldo(this.getSaldo() - valor);
     }

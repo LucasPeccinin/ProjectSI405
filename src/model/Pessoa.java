@@ -15,7 +15,6 @@ public class Pessoa {
         this.nome = nome;
         this.cpf = cpf;
         this.nascimento = nascimento;
-        //this.contas = new ArrayList();
         Pessoa.PessoaCount += 1;
         this.contas = new ArrayList<ContaBancaria>();
     }
@@ -52,6 +51,7 @@ public class Pessoa {
         this.nascimento = nascimento;
     }
 
+    @Override
     public String toString() {
         return "\nNome:" + this.getNome() + "\nCPF" + this.getCpf() + "\nData de Nascimento" + this.getNascimento() + "\n";
     }
