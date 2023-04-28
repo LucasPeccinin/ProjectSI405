@@ -4,8 +4,8 @@ package model;
 public class ContaEspecial extends ContaBancaria {
     private double limiteCredito;
 
-    public ContaEspecial(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao, double limiteCredito) {
-        super(dataAbertura, pessoa, saldo, limitePorTransacao);
+    public ContaEspecial(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao, double limiteCredito, TipoConta tipoConta) {
+        super(dataAbertura, pessoa, saldo, limitePorTransacao, tipoConta.ESPECIAL);
         this.limiteCredito = limiteCredito;
     }
 
@@ -18,14 +18,11 @@ public class ContaEspecial extends ContaBancaria {
     }
     
     @Override
-    public void sacar(double valor) throws SaldoOperacaoInsuficienteException, ValorOperacaoZeradoException, ValorExcedeLimiteException {
+    public void sacar(double valor) throws ValorOperacaoZeradoException, ValorExcedeLimiteException {
         if (valor <= 0) {
             throw new ValorOperacaoZeradoException();
         }
         if (this.getSaldo() + this.getLimiteCredito() - valor < 0) {
-            throw new SaldoOperacaoInsuficienteException();
-        }
-        if (valor > this.getLimitePorTransacao()) {
             throw new ValorExcedeLimiteException();
         }
         this.setSaldo(this.getSaldo() - valor);

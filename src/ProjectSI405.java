@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 import model.ContaBancaria;
+import model.ContaBancaria.TipoConta;
 import model.ContaComum;
 import model.ContaEspecial;
 import model.ContaPoupanca;
@@ -20,7 +21,6 @@ public class ProjectSI405 {
     }
 
     public static void operacoes() throws ContaBancaria.SaldoOperacaoInsuficienteException, ContaBancaria.ValorOperacaoZeradoException, ContaBancaria.ValorExcedeLimiteException {
-        System.out.println("\n");
         System.out.println("------------------------------------------------------");
         System.out.println("***** Selecione uma operacao que deseja realizar *****");
         System.out.println("------------------------------------------------------");
@@ -44,7 +44,7 @@ public class ProjectSI405 {
                 break;
 
             case 3:
-                //sacar();
+                sacar();
                 break;
 
             case 4:
@@ -56,7 +56,7 @@ public class ProjectSI405 {
                 break;
 
             case 6:
-                //atualizarConta();
+                atualizarLimite();
                 break;
 
             case 7:
@@ -74,38 +74,39 @@ public class ProjectSI405 {
         System.out.println("Insira as informacoes do titular da conta:");
 
         System.out.println("\nCPF: ");
-        String cpf = input.next();
+        input.nextLine(); // consome o \n que ficou no buffer
+        String cpf = input.nextLine();
 
         Pessoa pessoa = encontrarPessoa(cpf);
 
         if (pessoa != null) {
-            System.out.println("\nCliente ja cadastrado no sistema");
-            System.out.println("\nInsira o saldo inicial da conta: ");
+            System.out.println("Cliente ja cadastrado no sistema");
+            System.out.println("Insira o saldo inicial da conta: ");
             double saldo = input.nextDouble();
 
-            System.out.println("\nInsira o limite inicial da conta: ");
+            System.out.println("Insira o limite inicial da conta: ");
             double limite = input.nextDouble();
 
-            System.out.println("\nInsira a data de abertura da conta: ");
-            String dataAbertura = input.next();
+            System.out.println("Insira a data de abertura da conta: ");
+            String dataAbertura = input.nextLine();
 
             escolhaTipoConta(pessoa, saldo, limite, dataAbertura);
         } else {
-            System.out.println("\nCadastre o cliente para continuar!");
+            System.out.println("Cadastre o cliente para continuar!");
             System.out.println("Nome: ");
-            String nome = input.next();
+            String nome = input.nextLine();
 
-            System.out.println("\nData de Nascimento: ");
-            String nascimento = input.next();
+            System.out.println("Data de Nascimento: ");
+            String nascimento = input.nextLine();
 
-            System.out.println("\nInsira o saldo inicial da conta: ");
+            System.out.println("Insira o saldo inicial da conta: ");
             double saldo = input.nextDouble();
 
-            System.out.println("\nInsira o limite inicial da conta: ");
+            System.out.println("Insira o limite inicial da conta: ");
             double limite = input.nextDouble();
 
-            System.out.println("\nInsira a data de abertura da conta: ");
-            String dataAbertura = input.next();
+            System.out.println("Insira a data de abertura da conta: ");
+            String dataAbertura = input.nextLine();
 
             pessoa = new Pessoa(nome, cpf, nascimento);
 
@@ -121,7 +122,7 @@ public class ProjectSI405 {
         System.out.println("--------------------------------------------------------------");
         System.out.println("-------------Escolha o tipo de conta do cliente---------------");
         System.out.println("--------------------------------------------------------------");
-        System.out.println("**************** Selecione a operação desejada ***************");
+        System.out.println("**************** Selecione a operacao desejada ***************");
         System.out.println("--------------------------------------------------------------");
         System.out.println("|   1 - Conta Comum        |");
         System.out.println("|   2 - Conta Especial     |");
@@ -131,13 +132,14 @@ public class ProjectSI405 {
 
         switch (operacao) {
             case 1 -> {
-                ContaComum contaC = new ContaComum(dataAbertura, pessoa, saldo, limite);
+                ContaComum contaC = new ContaComum(dataAbertura, pessoa, saldo, limite, TipoConta.COMUM);
 
                 System.out.println("\nConta Comum criada com sucesso!");
                 System.out.println("\n---------- Resumo da operacao ----------");
-                System.out.println("Numero da conta:    " + contaC.getId());
-                System.out.println("Nome do titular:    " + pessoa.getNome());
-                System.out.println("Saldo:  " + contaC.getSaldo());
+                System.out.println("Numero da conta: " + contaC.getId());
+                System.out.println("Nome do titular: " + pessoa.getNome());
+                System.out.println("Tipo da conta: " + contaC.getTipoConta());
+                System.out.println("Saldo: " + contaC.getSaldo());
                 System.out.println("Limite: " + contaC.getLimitePorTransacao());
 
                 pessoa.adicionarConta(contaC);
@@ -147,18 +149,19 @@ public class ProjectSI405 {
                 operacoes();
             }
             case 2 -> {
-                System.out.println("\nDigite o limite por transacao: ");
+                System.out.println("\nDigite o limite de credito: ");
                 int limiteCredito = input.nextInt();
 
-                ContaEspecial contaE = new ContaEspecial(dataAbertura, pessoa, saldo, limite, limiteCredito);
+                ContaEspecial contaE = new ContaEspecial(dataAbertura, pessoa, saldo, limite, limiteCredito, TipoConta.ESPECIAL);
 
                 System.out.println("\nConta Especial criada com sucesso!");
                 System.out.println("\n---------- Resumo da operacao ----------");
                 System.out.println("Numero da conta: " + contaE.getId());
                 System.out.println("Nome do titular: " + pessoa.getNome());
+                System.out.println("Tipo da conta: " + contaE.getTipoConta());
                 System.out.println("Saldo: " + contaE.getSaldo());
                 System.out.println("Limite: " + contaE.getLimitePorTransacao());
-                System.out.println("Limite: " + contaE.getLimiteCredito());
+                System.out.println("Limite de credito: " + contaE.getLimiteCredito());
 
                 pessoa.adicionarConta(contaE);
 
@@ -167,15 +170,22 @@ public class ProjectSI405 {
                 operacoes();
             }
             case 3 -> {
-                System.out.println("\nDigite o dia de aniversario da conta: ");
-                int diaAniversario = input.nextInt();
+                int diaAniversario;
+                do {
+                    System.out.println("\nDigite o dia de aniversario da conta: ");
+                    diaAniversario = input.nextInt();
+                    if(diaAniversario <= 0 || diaAniversario > 31){
+                        System.out.println("Digite um dia de mes valido.");
+                    }
+                } while (diaAniversario <= 0 || diaAniversario > 31);
 
-                ContaPoupanca contaP = new ContaPoupanca(dataAbertura, pessoa, saldo, limite, diaAniversario);
+                ContaPoupanca contaP = new ContaPoupanca(dataAbertura, pessoa, saldo, limite, diaAniversario, TipoConta.COMUM);
 
                 System.out.println("\nConta Especial criada com sucesso!");
                 System.out.println("\n---------- Resumo da operacao ----------");
                 System.out.println("Numero da conta: " + contaP.getId());
                 System.out.println("Nome do titular: " + pessoa.getNome());
+                System.out.println("Tipo da conta: " + contaP.getTipoConta());
                 System.out.println("Saldo: " + contaP.getSaldo());
                 System.out.println("Limite: " + contaP.getLimitePorTransacao());
                 System.out.println("Dia aniversario: " + contaP.getDiaAniversario());
@@ -268,7 +278,7 @@ public class ProjectSI405 {
                     System.out.println("Saldo final conta Origem: " + contaOrigem.getSaldo());
                     System.out.println("Saldo final conta Destino: " + contaDestino.getSaldo());
                     System.out.println("Valor transferido: " + valorTransf);
-                    
+
                     operacoes();
                 } catch (ContaBancaria.SaldoOperacaoInsuficienteException ex) {
                     System.out.println("\nAtualize o saldo da conta de origem e tente novamente.");
@@ -288,17 +298,129 @@ public class ProjectSI405 {
         }
     }
 
+    public static void sacar() throws ContaBancaria.SaldoOperacaoInsuficienteException, ContaBancaria.ValorOperacaoZeradoException, ContaBancaria.ValorExcedeLimiteException {
+        System.out.println("\nDigite a conta para saque: ");
+        int contaS = input.nextInt();
+
+        ContaBancaria contaSaque = encontrarContaBancaria(contaS);
+
+        if (contaSaque != null) {
+            System.out.println("\nDigite o valor do saque: ");
+            double valorSaque = input.nextDouble();
+
+            try {
+                contaSaque.sacar(valorSaque);
+                System.out.println("\nSaque realizado com sucesso!");
+                System.out.println("\n---------- Resumo da operacao ----------");
+                System.out.println("Numero da conta: " + contaSaque.getId());
+                System.out.println("Valor sacado: " + valorSaque);
+                System.out.println("Saldo da conta apos o saque: " + contaSaque.getSaldo());
+
+                operacoes();
+            } catch (ContaBancaria.SaldoOperacaoInsuficienteException ex) {
+                System.out.println("\nAtualize o saldo da conta de origem e tente novamente.");
+                operacoes();
+            } catch (ContaBancaria.ValorOperacaoZeradoException ex) {
+                System.out.println("\nInsira um valor maior do que zero para prosseguir com a transferencia.");
+                operacoes();
+            } catch (ContaBancaria.ValorExcedeLimiteException ex) {
+                System.out.println("\nAtualize o limite ou diminua o valor da transferencia.");
+                operacoes();
+            }
+        } else {
+            operacoes();
+        }
+    }
+
+    public static void atualizarLimite() throws ContaBancaria.SaldoOperacaoInsuficienteException, ContaBancaria.ValorOperacaoZeradoException, ContaBancaria.ValorExcedeLimiteException {
+        System.out.println("Digite a conta a ser atualizada: ");
+        int numeroConta = input.nextInt();
+
+        ContaBancaria contaAtualizacao = encontrarContaBancaria(numeroConta);
+
+        if (contaAtualizacao != null) {
+            if (contaAtualizacao.getTipoConta() != null) {
+                switch (contaAtualizacao.getTipoConta()) {
+                    case COMUM, POUPANCA -> {
+                        System.out.println("Digite o novo limite de transacoes da conta: ");
+                        int novoLimite = input.nextInt();
+                        contaAtualizacao.setLimitePorTransacao(novoLimite);
+                        System.out.println("Limite atualizado com sucesso!");
+                        System.out.println("---------- Resumo da operacao ----------");
+                        System.out.println("Numero da conta: " + contaAtualizacao.getId());
+                        System.out.println("Valor do novo limite de transacoes: " + novoLimite);
+
+                        operacoes();
+                    }
+                    case ESPECIAL -> {
+                        ContaEspecial contaEspecial = (ContaEspecial) contaAtualizacao;
+                        System.out.println("Escolha qual limite deseja atualizar: ");
+                        System.out.println("1 - Limite de Transacoes");
+                        System.out.println("2 - Limite de Credito");
+                        int escolha = input.nextInt();
+
+                        if (escolha == 1) {
+                            System.out.println("Digite o novo limite de transacoes da conta: ");
+                            int novoLimite = input.nextInt();
+
+                            contaEspecial.setLimitePorTransacao(novoLimite);
+
+                            System.out.println("Limite atualizado com sucesso!");
+                            System.out.println("---------- Resumo da operacao ----------");
+                            System.out.println("Numero da conta: " + contaAtualizacao.getId());
+                            System.out.println("Valor do novo limite de transacoes: " + novoLimite);
+
+                            operacoes();
+                        } else if (escolha == 2) {
+                            System.out.println("Digite o novo limite de credito da conta: ");
+
+                            int novoCredito = input.nextInt();
+
+                            contaEspecial.setLimiteCredito(novoCredito);
+                            System.out.println("Limite atualizado com sucesso!");
+                            System.out.println("---------- Resumo da operacao ----------");
+                            System.out.println("Numero da conta: " + contaAtualizacao.getId());
+                            System.out.println("Valor do novo limite de credito: " + novoCredito);
+
+                            operacoes();
+                        }
+                    }
+                    default -> {
+                        System.out.println("Valor invalido!");
+                        operacoes();
+                    }
+                }
+            }
+        } else {
+            operacoes();
+        }
+    }
+
     public static void listarContas() throws ContaBancaria.SaldoOperacaoInsuficienteException, ContaBancaria.ValorOperacaoZeradoException, ContaBancaria.ValorExcedeLimiteException {
         if (!contas.isEmpty()) {
             for (ContaBancaria conta : contas) {
-                System.out.println("Numero da conta: " + conta.getId());
-                System.out.println("Nome do titular: " + conta.getNomePessoa());
-                System.out.println("CPF do titular: " + conta.getCpfPessoa());
-                System.out.println("Saldo: " + conta.getSaldo());
-                System.out.println("-----------------------");
+                if (conta.getTipoConta() == TipoConta.COMUM || conta.getTipoConta() == TipoConta.POUPANCA) {
+                    System.out.println("Numero da conta: " + conta.getId());
+                    System.out.println("Nome do titular: " + conta.getNomePessoa());
+                    System.out.println("Tipo da conta: " + conta.getTipoConta());
+                    System.out.println("Limite de transacoes: " + conta.getLimitePorTransacao());
+                    System.out.println("CPF do titular: " + conta.getCpfPessoa());
+                    System.out.println("Saldo: " + conta.getSaldo());
+                    System.out.println("-----------------------");
+                } else if (conta.getTipoConta() == TipoConta.ESPECIAL) {
+                    ContaEspecial contaEspecial = (ContaEspecial) conta;
+                    System.out.println("Numero da conta: " + conta.getId());
+                    System.out.println("Nome do titular: " + conta.getNomePessoa());
+                    System.out.println("Tipo da conta: " + conta.getTipoConta());
+                    System.out.println("Limite de transacoes: " + conta.getLimitePorTransacao());
+                    System.out.println("Limite de credito: " + contaEspecial.getLimiteCredito());
+                    System.out.println("CPF do titular: " + conta.getCpfPessoa());
+                    System.out.println("Saldo: " + conta.getSaldo());
+                    System.out.println("-----------------------");
+                }
             }
         } else {
-            System.out.println("Nao ha contas cadastradas\n");
+            System.out.println("Nao ha contas cadastradas");
         }
         operacoes();
     }

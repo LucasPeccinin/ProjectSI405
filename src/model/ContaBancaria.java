@@ -1,21 +1,29 @@
 package model;
 
 public abstract class ContaBancaria {
+    
+    public enum TipoConta {
+        COMUM,
+        ESPECIAL,
+        POUPANCA
+    }
 
     private static int ContaCount = 1;
 
     private int id;
     private String dataAbertura;
     private Pessoa pessoa;
+    private TipoConta tipoConta;
     private double saldo = 0.0;
     private double limitePorTransacao;
 
-    public ContaBancaria(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao) {
+    public ContaBancaria(String dataAbertura, Pessoa pessoa, double saldo, double limitePorTransacao, TipoConta tipoConta) {
         this.id = ContaBancaria.ContaCount;
         this.dataAbertura = dataAbertura;
         this.saldo = saldo;
         this.pessoa = pessoa;
         this.limitePorTransacao = limitePorTransacao;
+        this.tipoConta = tipoConta;
         ContaBancaria.ContaCount += 1;
     }
 
@@ -55,10 +63,16 @@ public abstract class ContaBancaria {
         this.limitePorTransacao = limitePorTransacao;
     }
 
+    public TipoConta getTipoConta() {
+        return tipoConta;
+    }
+
     @Override
     public String toString() {
-        return "\nConta Bancaria:" + this.getId() + "\nCliente:" + this.getPessoa()
-                + "\nSaldo:" + this.getSaldo() + "\nLimite por Transação:" + this.getLimitePorTransacao() + "\n";
+        return "Conta Bancaria: " + this.getId() + 
+               "Cliente: " + this.getPessoa() + 
+               "Saldo: " + this.getSaldo() + 
+               "Limite por Transação: " + this.getLimitePorTransacao() + "\n";
     }
 
     public void depositar(double valor) {
@@ -84,21 +98,21 @@ public abstract class ContaBancaria {
     public class SaldoOperacaoInsuficienteException extends Exception {
 
         public SaldoOperacaoInsuficienteException() {
-            System.out.println("\nSaldo insuficiente para realizar a transferencia");
+            System.out.println("\nSaldo insuficiente para realizar a transferencia.");
         }
     }
 
     public class ValorOperacaoZeradoException extends Exception {
 
         public ValorOperacaoZeradoException() {
-            System.out.println("\nValor da transferencia deve ser maior que zero");
+            System.out.println("\nValor da transferencia deve ser maior que zero.");
         }
     }
     
     public class ValorExcedeLimiteException extends Exception {
 
         public ValorExcedeLimiteException() {
-            System.out.println("\nValor da operacao excede o limite por transacao");
+            System.out.println("\nValor da operacao excede o limite.");
         }
     }
 }
